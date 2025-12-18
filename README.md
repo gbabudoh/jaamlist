@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jaamlist - Live Streaming Platform
+
+Jaamlist is a modern live streaming platform that connects performers with global audiences. Stream concerts, interviews, stage dramas, and comedy shows to viewers worldwide.
+
+## Features
+
+- **Live Streaming** - HD quality streaming with ultra-low latency
+- **Global Reach** - Stream to 150+ countries via global CDN
+- **Multiple Event Types** - Concerts, Interviews, Stage Dramas, Comedy Shows
+- **Monetization** - Paid per-viewer streams and sponsored events
+- **Country-based Discovery** - Find events by country
+- **Real-time Analytics** - Track viewers and engagement
+
+## Revenue Model
+
+Jaamlist is free to use for creators. We earn when you earn:
+
+- **Paid Live Streams** - Set your ticket price, keep 85% of revenue
+- **Sponsored Streams** - Partner with brands for additional income
+- **Free Streams** - $150 per event to offer free viewer access
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Authentication**: NextAuth.js
+- **Database**: Prisma ORM
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/gbabudoh/jaamlist.git
+
+# Navigate to project directory
+cd jaamlist
+
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+jaamlist/
+├── app/                    # Next.js App Router pages
+│   ├── about/             # About page
+│   ├── api/               # API routes
+│   ├── events/            # Events listing page
+│   ├── login/             # Login page
+│   ├── signup/            # Signup page
+│   ├── stream/            # Stream/Creator page
+│   └── page.tsx           # Homepage
+├── components/            # React components
+│   ├── ui/               # shadcn/ui components
+│   ├── footer.tsx        # Footer component
+│   └── navbar.tsx        # Navigation component
+├── lib/                  # Utility functions
+├── prisma/               # Database schema
+└── public/               # Static assets
+```
 
-## Learn More
+## Pages
 
-To learn more about Next.js, take a look at the following resources:
+- **/** - Homepage with hero, features, and call-to-actions
+- **/events** - Browse live events with country/category filters
+- **/stream** - Creator page with streaming features and revenue info
+- **/about** - About page with company mission and values
+- **/login** - User login
+- **/signup** - User registration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Brand Colors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Primary Yellow: `#f7e774`
+- Dark Gray: `#2d2d2a`
+- Accent: `#d4a500`
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+MIT License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contact
+
+For support, email support@jaamlist.com

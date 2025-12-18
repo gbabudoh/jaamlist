@@ -1,0 +1,141 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  CREATOR
+  ADMIN
+}
+
+enum EventStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  LIVE
+  ENDED
+}
+
+enum EventType {
+  FREE
+  PAID
+  SPONSORED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  phone         String?
+  password      String
+  role          UserRole  @default(USER)
+  avatar        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  createdEvents Event[]   @relation("EventCreator")
+  accessCodes   AccessCode[]
+  payments      Payment[]
+  
+  @@map("users")
+}
+
+model Event {
+  id              String      @id @default(cuid())
+  title           String
+  description     String      @db.Text
+  thumbnail       String?
+  streamKey       String      @unique
+  rtmpUrl         String
+  playbackUrl     String?
+  
+  type            EventType   @default(FREE)
+  status          EventStatus @default(PENDING)
+  price           Float?
+  
+  scheduledAt     DateTime
+  startedAt       DateTime?
+  endedAt         DateTime?
+  
+  maxViewers      Int?
+  currentViewers  Int         @default(0)
+  totalViews      Int         @default(0)
+  
+  creatorId       String
+  creator         User        @relation("EventCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  
+  sponsors        Sponsor[]
+  accessCodes     AccessCode[]
+  payments        Payment[]
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  @@index([status])
+  @@index([creatorId])
+  @@index([scheduledAt])
+  @@map("events")
+}
+
+model Sponsor {
+  id          String   @id @default(cuid())
+  name        String
+  logo        String
+  website     String?
+  priority    Int      @default(0)
+  
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("sponsors")
+}
+
+model AccessCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  used        Boolean  @default(false)
+  usedAt      DateTime?
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([code])
+  @@index([eventId])
+  @@map("access_codes")
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  amount          Float
+  currency        String   @default("usd")
+  
+  stripeSessionId String   @unique
+  stripePaymentId String?
+  
+  status          String   @default("pending")
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  eventId         String
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("payments")
+}
