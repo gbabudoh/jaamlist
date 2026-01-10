@@ -2,16 +2,16 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Radio, Music, Mic, Theater, Laugh, Play, Users, Globe, Zap, Shield, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { Music, Mic, Theater, Laugh, Play, Users, Globe, Zap, Shield, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react'
 
 const categories = [
-  { icon: Music, label: 'Live Concerts', description: 'Experience music like never before', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
-  { icon: Mic, label: 'Live Interviews', description: 'Exclusive conversations', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
-  { icon: Theater, label: 'Stage Dramas', description: 'Theater at your fingertips', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
-  { icon: Laugh, label: 'Comedy Shows', description: 'Laugh out loud moments', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
+  { id: 'concert', icon: Music, label: 'Live Concerts', description: 'Experience music like never before', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
+  { id: 'interview', icon: Mic, label: 'Live Interviews', description: 'Exclusive conversations', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
+  { id: 'drama', icon: Theater, label: 'Stage Dramas', description: 'Theater at your fingertips', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
+  { id: 'comedy', icon: Laugh, label: 'Comedy Shows', description: 'Laugh out loud moments', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
 ]
 
 const features = [
@@ -175,36 +175,36 @@ export default function HomePage() {
                     <span className="text-sm font-medium text-white">12.5K watching</span>
                   </div>
 
-                  {/* Now Playing Badge - Inside */}
+                  {/* Now Playing Badge - Reduced on mobile */}
                   <motion.div
                     animate={{ opacity: [0.9, 1, 0.9] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute top-4 right-4 bg-white/95 backdrop-blur rounded-lg shadow-lg p-3"
+                    className="absolute top-2 right-2 md:top-4 md:right-4 bg-white/95 backdrop-blur rounded-lg shadow-lg p-1.5 md:p-3"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-[#f7e774] flex items-center justify-center">
-                        <Music className="h-4 w-4 text-[#2d2d2a]" />
+                    <div className="flex items-center gap-1.5 md:gap-2">
+                      <div className="h-5 w-5 md:h-8 md:w-8 rounded-full bg-[#f7e774] flex items-center justify-center">
+                        <Music className="h-2.5 w-2.5 md:h-4 md:w-4 text-[#2d2d2a]" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-muted-foreground">Now Playing</p>
-                        <p className="text-xs font-semibold text-[#2d2d2a]">Jazz Night Live</p>
+                        <p className="text-[8px] md:text-[10px] text-muted-foreground">Now Playing</p>
+                        <p className="text-[10px] md:text-xs font-semibold text-[#2d2d2a]">Jazz Night Live</p>
                       </div>
                     </div>
                   </motion.div>
 
-                  {/* Streaming To Badge - Inside */}
+                  {/* Streaming To Badge - Reduced on mobile */}
                   <motion.div
                     animate={{ opacity: [0.9, 1, 0.9] }}
                     transition={{ duration: 2.5, repeat: Infinity }}
-                    className="absolute bottom-4 right-4 bg-white/95 backdrop-blur rounded-lg shadow-lg p-3"
+                    className="absolute bottom-2 right-2 md:bottom-4 md:right-4 bg-white/95 backdrop-blur rounded-lg shadow-lg p-1.5 md:p-3"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-[#60615b] flex items-center justify-center">
-                        <Globe className="h-4 w-4 text-white" />
+                    <div className="flex items-center gap-1.5 md:gap-2">
+                      <div className="h-5 w-5 md:h-8 md:w-8 rounded-full bg-[#60615b] flex items-center justify-center">
+                        <Globe className="h-2.5 w-2.5 md:h-4 md:w-4 text-white" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-muted-foreground">Streaming to</p>
-                        <p className="text-xs font-semibold text-[#2d2d2a]">150+ Countries</p>
+                        <p className="text-[8px] md:text-[10px] text-muted-foreground">Streaming to</p>
+                        <p className="text-[10px] md:text-xs font-semibold text-[#2d2d2a]">150+ Countries</p>
                       </div>
                     </div>
                   </motion.div>
@@ -247,7 +247,7 @@ export default function HomePage() {
           >
             <span className="inline-block text-sm font-semibold text-[#d4a500] mb-4">CATEGORIES</span>
             <h2 className="font-display text-3xl font-bold sm:text-4xl lg:text-5xl mb-4">
-              What's Streaming
+              What&apos;s Streaming
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Discover live performances across various categories and find your next favorite show
@@ -265,15 +265,17 @@ export default function HomePage() {
                 whileHover={{ y: -8 }}
                 className="group cursor-pointer"
               >
-                <Card className="h-full border-2 hover:border-[#f7e774] transition-all overflow-hidden">
-                  <CardContent className="p-6">
-                    <div className={`${category.color} w-14 h-14 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <category.icon className="h-7 w-7 text-white" />
-                    </div>
-                    <h3 className="font-semibold text-lg mb-2">{category.label}</h3>
-                    <p className="text-sm text-muted-foreground">{category.description}</p>
-                  </CardContent>
-                </Card>
+                <Link href={`/events?category=${category.id}`}>
+                  <Card className="h-full border-2 hover:border-[#f7e774] transition-all overflow-hidden">
+                    <CardContent className="p-6">
+                      <div className={`${category.color} w-14 h-14 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <category.icon className="h-7 w-7 text-white" />
+                      </div>
+                      <h3 className="font-semibold text-lg mb-2">{category.label}</h3>
+                      <p className="text-sm text-muted-foreground">{category.description}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
               </motion.div>
             ))}
           </div>

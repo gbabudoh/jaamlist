@@ -29,6 +29,13 @@ enum EventType {
   SPONSORED
 }
 
+enum StreamingStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -37,6 +44,15 @@ model User {
   password      String
   role          UserRole  @default(USER)
   avatar        String?
+  
+  // Creator Profile fields
+  bio             String?   @db.Text
+  website         String?
+  instagram       String?
+  twitter         String?
+  streamingStatus StreamingStatus @default(NONE)
+  payoutEmail     String?
+  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   

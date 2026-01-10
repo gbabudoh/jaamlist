@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { signIn } from 'next-auth/react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -23,9 +24,19 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Temporarily redirect to home since auth is not connected
-      router.push('/')
-    } catch (error) {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      })
+
+      if (result?.error) {
+        setError('Invalid email or password')
+      } else {
+        router.push('/dashboard')
+        router.refresh()
+      }
+    } catch {
       setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
@@ -127,7 +138,7 @@ export default function LoginPage() {
               </Button>
 
               <p className="text-center text-sm text-muted-foreground pt-2">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link href="/signup" className="font-semibold text-[#d4a500] hover:underline">
                   Sign up
                 </Link>

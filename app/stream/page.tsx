@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Radio, Video, Users, Zap, Globe, Shield, DollarSign, BarChart3, Sparkles, Play, CheckCircle2, ArrowRight, Music, Mic, Theater, Laugh, Clock, Headphones, Settings, Monitor, Award, Heart } from 'lucide-react'
+import { Radio, Video, Users, Zap, Globe, Shield, DollarSign, BarChart3, Sparkles, Play, CheckCircle2, ArrowRight, Music, Mic, Theater, Laugh, Headphones, Settings, Monitor, Award, Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
@@ -40,10 +40,10 @@ const features = [
 ]
 
 const eventTypes = [
-  { icon: Music, label: 'Live Concerts', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
-  { icon: Mic, label: 'Interviews', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
-  { icon: Theater, label: 'Stage Dramas', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
-  { icon: Laugh, label: 'Comedy Shows', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
+  { id: 'concert', icon: Music, label: 'Live Concerts', desc: 'Experience music like never before', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
+  { id: 'interview', icon: Mic, label: 'Live Interviews', desc: 'Exclusive conversations', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
+  { id: 'drama', icon: Theater, label: 'Stage Dramas', desc: 'Theater at your fingertips', color: 'bg-gradient-to-br from-[#f7e774] to-[#d4a500]' },
+  { id: 'comedy', icon: Laugh, label: 'Comedy Shows', desc: 'Laugh out loud moments', color: 'bg-gradient-to-br from-[#60615b] to-[#3d3d38]' },
 ]
 
 const revenueModels = [
@@ -144,12 +144,12 @@ export default function StreamPage() {
                     Start Streaming Free
                   </Button>
                 </Link>
-                <Link href="/events">
-                  <Button size="lg" variant="outline" className="h-14 px-8 text-base font-semibold border-white/30 text-white hover:bg-white/10">
-                    Watch Live Events
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
+                  <Link href="/events">
+                    <Button size="lg" className="h-14 px-8 text-base font-semibold bg-white text-[#2d2d2a] hover:bg-gray-100">
+                      Watch Live Events
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
               </div>
 
               {/* Trust Badges */}
@@ -276,7 +276,7 @@ export default function StreamPage() {
               Stream Any Performance
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Whether it's music, comedy, theater, or talk shows - we've got you covered
+              Whether it&apos;s music, comedy, theater, or talk shows - we&apos;ve got you covered
             </p>
           </motion.div>
 
@@ -289,14 +289,16 @@ export default function StreamPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="cursor-pointer"
-              >
-                <Card className="h-full border-2 hover:border-[#f7e774] transition-all text-center p-6">
-                  <div className={`${type.color} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4`}>
-                    <type.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-lg">{type.label}</h3>
-                </Card>
+                >
+                <Link href={`/events?category=${type.id}`}>
+                  <Card className="h-full border-2 hover:border-[#f7e774] transition-all text-center p-6 bg-card/50 backdrop-blur-sm group hover:shadow-lg">
+                    <div className={`${type.color} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                      <type.icon className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-xl mb-2 group-hover:text-[#d4a500] transition-colors">{type.label}</h3>
+                    <p className="text-sm text-muted-foreground">{type.desc}</p>
+                  </Card>
+                </Link>
               </motion.div>
             ))}
           </div>
