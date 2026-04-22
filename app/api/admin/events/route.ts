@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { notifyEventApproved } from '@/lib/notifications'
 
 // GET /api/admin/events - List all events
 export async function GET(request: Request) {
@@ -81,6 +82,15 @@ export async function PUT(request: Request) {
         ...(status === 'ENDED' && { endedAt: new Date() }),
       },
     })
+
+    // Trigger notification if status changed to APPROVED
+    if (status === 'APPROVED') {
+      try {
+        await notifyEventApproved(event.creatorId, event.title)
+      } catch (notifyError) {
+        console.error('Failed to send approval notification:', notifyError)
+      }
+    }
 
     return NextResponse.json(event)
   } catch (error) {

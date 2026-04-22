@@ -9,12 +9,14 @@ declare module 'next-auth' {
     id: string
     role: string
     streamingStatus: string
+    image?: string | null
   }
   interface Session extends DefaultSession {
     user: {
       id: string
       role: string
       streamingStatus: string
+      image?: string | null
     } & DefaultSession['user']
   }
 }
@@ -76,7 +78,8 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             role: user.role,
-            streamingStatus: (user as unknown as { streamingStatus: string }).streamingStatus || 'NONE',
+            streamingStatus: user.streamingStatus || 'NONE',
+            image: user.avatar,
           }
         } catch (error) {
           console.error('Auth error:', error)
@@ -91,6 +94,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id
         token.role = user.role
         token.streamingStatus = user.streamingStatus
+        token.picture = user.image
       }
       return token
     },
@@ -99,6 +103,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string
         session.user.role = token.role as string
         session.user.streamingStatus = token.streamingStatus as string
+        session.user.image = token.picture as string
       }
       return session
     },

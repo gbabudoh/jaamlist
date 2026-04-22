@@ -11,7 +11,9 @@ export async function GET(req: NextRequest) {
     }
 
     const user = await prisma.user.findFirst({
-      where: { verificationToken: token },
+      where: {
+        verificationToken: token,
+      },
     })
 
     if (!user) {

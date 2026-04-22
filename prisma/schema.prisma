@@ -2,6 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../lib/generated/client"
 }
 
 datasource db {
@@ -54,7 +55,7 @@ model User {
   payoutEmail     String?
   
   emailVerified     DateTime?
-  verificationToken String?
+  verificationToken String?   @unique
   resetToken        String?   @unique
   resetTokenExpires DateTime?
   

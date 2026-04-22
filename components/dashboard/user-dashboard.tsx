@@ -21,6 +21,9 @@ import {
   Zap,
   Menu,
   X,
+  Camera,
+  User,
+  CheckCircle2,
   LucideIcon
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -213,7 +216,7 @@ export function UserDashboard({ session }: UserDashboardProps) {
               >
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-                  <QuickStat title="Total Experiences" value="12" icon={Video} color="gold" delay={0.1} />
+                  <QuickStat title="Total Experiences" value={userEvents.length.toString()} icon={Video} color="gold" delay={0.1} />
                   <QuickStat title="Watch Hours" value="48.5h" icon={Clock} color="indigo" delay={0.2} />
                   <QuickStat title="Saved Items" value="24" icon={Heart} color="rose" delay={0.3} />
                   <QuickStat title="Achievement Score" value="840" icon={Star} color="emerald" delay={0.4} />
@@ -396,6 +399,8 @@ export function UserDashboard({ session }: UserDashboardProps) {
                   </div>
                 </div>
               </motion.div>
+            ) : activeTab === 'settings' ? (
+              <SettingsView session={session} />
             ) : (
               <motion.div
                 key="other"
@@ -567,6 +572,190 @@ function QuickStat({ title, value, icon: Icon, color, delay }: { title: string, 
         <div className="relative z-10">
           <p className="text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-0.5 sm:mb-2">{title}</p>
           <h2 className="text-2xl sm:text-4xl font-black text-[#0f172a] tracking-tighter group-hover:text-[#d4a500] transition-colors">{value}</h2>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function SettingsView({ session }: { session: Session | null }) {
+  const [name, setName] = useState(session?.user?.name || '')
+  const [avatar, setAvatar] = useState(session?.user?.image || '')
+  const [isUploading, setIsUploading] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsUploading(true)
+    setMessage(null)
+
+    try {
+      // 1. Get presigned URL
+      const res = await fetch('/api/storage/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name })
+      })
+
+      if (!res.ok) throw new Error('Failed to get upload URL')
+      const { uploadUrl, publicUrl } = await res.json()
+
+      // 2. Upload to Minio
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type }
+      })
+
+      if (!uploadRes.ok) throw new Error('Failed to upload file')
+
+      // 3. Update local preview
+      setAvatar(publicUrl)
+      setMessage({ type: 'success', text: 'Identity asset uploaded successfully.' })
+    } catch (error) {
+      console.error('Upload error:', error)
+      setMessage({ type: 'error', text: 'Failed to synchronize asset.' })
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleSaveProfile = async () => {
+    setIsSaving(true)
+    setMessage(null)
+
+    try {
+      const res = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, image: avatar })
+      })
+
+      if (!res.ok) throw new Error('Failed to update profile')
+      
+      setMessage({ type: 'success', text: 'Profile node updated successfully.' })
+    } catch (error) {
+      console.error('Save error:', error)
+      setMessage({ type: 'error', text: 'Failed to commit changes.' })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-4xl mx-auto space-y-10"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div>
+          <h2 className="text-3xl font-black text-[#0f172a] tracking-tight">Preferences Hub</h2>
+          <p className="text-slate-500 font-bold mt-1">Manage your digital identity and studio configurations.</p>
+        </div>
+        <Button 
+          onClick={handleSaveProfile}
+          disabled={isSaving || isUploading}
+          className="h-14 px-10 rounded-2xl bg-[#0f172a] text-white hover:bg-[#d4a500] font-black transition-all shadow-xl disabled:opacity-50"
+        >
+          {isSaving ? 'Synchronizing...' : 'Commit Changes'}
+        </Button>
+      </div>
+
+      <div className="grid md:grid-cols-12 gap-10">
+        <div className="md:col-span-4 space-y-8">
+          {/* Avatar Section */}
+          <Card className="bg-white border-none shadow-xl shadow-slate-200/50 rounded-[40px] p-10 flex flex-col items-center text-center">
+            <div className="relative group cursor-pointer">
+              <div className="h-32 w-32 rounded-[40px] bg-slate-50 overflow-hidden ring-4 ring-white shadow-2xl relative">
+                <Image 
+                  src={avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${name || 'User'}`} 
+                  alt="Avatar" 
+                  fill 
+                  className="object-cover group-hover:scale-110 transition-transform duration-500" 
+                  unoptimized
+                />
+                {isUploading && (
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="h-8 w-8 border-4 border-[#f7e774] border-t-transparent rounded-full"
+                    />
+                  </div>
+                )}
+              </div>
+              <label className="absolute bottom-[-10px] right-[-10px] h-12 w-12 rounded-2xl bg-[#f7e774] text-[#0f172a] shadow-xl flex items-center justify-center hover:scale-110 transition-transform cursor-pointer border-4 border-white">
+                <Camera className="h-5 w-5" />
+                <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} disabled={isUploading} />
+              </label>
+            </div>
+            <div className="mt-8">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
+              <Badge className="bg-emerald-50 text-emerald-600 border-none font-black text-[10px] px-3 py-1 rounded-full">NODE ACTIVE</Badge>
+            </div>
+          </Card>
+        </div>
+
+        <div className="md:col-span-8 space-y-8">
+          <Card className="bg-white border-none shadow-xl shadow-slate-200/50 rounded-[40px] p-10 space-y-10">
+            {message && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className={`p-4 rounded-2xl flex items-center gap-3 font-bold text-sm ${
+                  message.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
+                }`}
+              >
+                {message.type === 'success' ? <CheckCircle2 className="h-5 w-5" /> : <Zap className="h-5 w-5" />}
+                {message.text}
+              </motion.div>
+            )}
+
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Identity Name</label>
+                <div className="relative group">
+                  <User className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-[#d4a500] transition-colors" />
+                  <Input 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="h-16 pl-14 bg-slate-50 border-none rounded-2xl font-bold text-lg focus:ring-4 focus:ring-[#f7e774]/20 transition-all"
+                    placeholder="Enter your artist name"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
+                <div className="relative">
+                  <Bell className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-200" />
+                  <Input 
+                    value={session?.user?.email || ''} 
+                    readOnly 
+                    className="h-16 pl-14 bg-slate-50/50 border-none rounded-2xl font-bold text-slate-400 cursor-not-allowed"
+                  />
+                </div>
+                <p className="text-[10px] text-slate-300 font-bold ml-1 italic">* Contact support to modify your root email.</p>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="h-10 w-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                  <Zap className="h-5 w-5 fill-current" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-[#0f172a]">Pro Account</p>
+                  <p className="text-[10px] font-bold text-slate-400">Valid until 2027</p>
+                </div>
+              </div>
+              <Button variant="ghost" className="text-slate-400 font-black text-[10px] uppercase tracking-widest hover:text-red-500">Deactivate Node</Button>
+            </div>
+          </Card>
         </div>
       </div>
     </motion.div>

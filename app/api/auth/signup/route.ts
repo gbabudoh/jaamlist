@@ -40,7 +40,6 @@ export async function POST(request: Request) {
     // Generate verification token
     const verificationToken = crypto.randomBytes(32).toString('hex')
 
-    // Create the user
     const user = await prisma.user.create({
       data: {
         name,

@@ -3,6 +3,7 @@ import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import { v4 as uuidv4 } from 'uuid'
 import Stripe from 'stripe'
+import { notifyAccessCodeIssued } from '@/lib/notifications'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -70,6 +71,14 @@ export async function POST(req: NextRequest) {
             eventId,
           },
         })
+
+        // Trigger notification
+        try {
+          const eventRecord = await prisma.event.findUnique({ where: { id: eventId } })
+          await notifyAccessCodeIssued(userId, eventRecord?.title || 'Event', accessCode.code)
+        } catch (notifyError) {
+          console.error('Failed to send access code notification:', notifyError)
+        }
 
         console.log(`Payment ${payment.id} confirmed. Access code ${accessCode.code} issued for event ${eventId}`)
         break
