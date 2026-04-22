@@ -45,7 +45,7 @@ export function MobileNav() {
                   />
                 )}
                 <item.icon className={cn("h-6 w-6", isActive && "scale-110")} />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[9px]">
+                <span className="text-[10px] font-bold uppercase tracking-widest">
                   {item.label}
                 </span>
               </Link>

@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@bagisto-native/about": "^1.0.1",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@noriginmedia/norigin-spatial-navigation": "^2.3.0",
     "@prisma/client": "^6.19.1",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -36,6 +39,7 @@
     "next": "16.0.10",
     "next-auth": "^4.24.13",
     "next-pwa": "^5.6.0",
+    "next-video": "^2.6.0",
     "onesignal-node": "^3.4.0",
     "prisma": "^6.19.1",
     "prisma-client": "^0.0.0",

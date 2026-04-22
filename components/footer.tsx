@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Radio, Facebook, Twitter, Instagram, Youtube, Mail } from 'lucide-react'
+import { useState } from 'react'
+import { Radio, Facebook, Twitter, Instagram, Youtube, Mail, ArrowRight } from 'lucide-react'
 
 const footerLinks = {
   platform: [
@@ -38,8 +39,55 @@ const socialLinks = [
 ]
 
 export function Footer() {
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault()
+    if (email) setSubmitted(true)
+  }
+
   return (
     <footer className="bg-[#2d2d2a] text-white">
+      {/* Newsletter Bar */}
+      <div className="border-b border-white/10">
+        <div className="container mx-auto px-4 py-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="max-w-sm">
+              <h3 className="text-lg font-bold mb-1">Stay in the loop</h3>
+              <p className="text-white/60 text-sm">Get notified about upcoming live events, new creators, and platform updates.</p>
+            </div>
+            {submitted ? (
+              <div className="flex items-center gap-2 text-[#f7e774] font-semibold text-sm">
+                <span className="w-5 h-5 rounded-full bg-[#f7e774]/20 flex items-center justify-center text-[#f7e774]">✓</span>
+                You're subscribed — we'll be in touch!
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex items-center gap-2 w-full md:w-auto">
+                <div className="relative flex-1 md:w-72">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-11 pl-9 pr-4 rounded-xl bg-white/10 border border-white/15 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-[#f7e774]/60 focus:bg-white/15 transition-all"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="h-11 px-5 rounded-xl bg-[#f7e774] text-[#2d2d2a] text-sm font-bold hover:bg-white transition-colors flex items-center gap-2 shrink-0"
+                >
+                  Subscribe
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12">

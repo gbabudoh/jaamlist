@@ -3,9 +3,9 @@
 import React from 'react'
 import { useSession } from 'next-auth/react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Calendar, 
-  Settings, 
+import {
+  Calendar,
+  Settings,
   LogOut,
   TrendingUp,
   Clock,
@@ -17,14 +17,16 @@ import {
   ArrowUpRight,
   Users,
   Video,
-  CheckCircle2
+  CheckCircle2,
+  Music,
+  Mic
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface StatCardProps {
   title: string
@@ -39,12 +41,13 @@ export default function DashboardPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('overview')
 
-  if (status === 'unauthenticated') {
-    router.push('/login')
-    return null
-  }
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+    }
+  }, [status, router])
 
-  if (status === 'loading') {
+  if (status === 'loading' || status === 'unauthenticated') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#fdfdfd]">
         <motion.div 
@@ -105,7 +108,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 space-y-8 mt-12 lg:mt-24">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 space-y-8 mt-4">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <motion.div
@@ -198,23 +201,45 @@ export default function DashboardPage() {
                       </Button>
                     </CardHeader>
                     <CardContent className="p-8 space-y-6">
-                      {[1, 2].map((i) => (
-                        <motion.div 
-                          key={i}
+                      {[
+                        {
+                          title: 'Summer Jazz Festival - Premium Stream',
+                          genre: 'Jazz & Soul',
+                          time: 'Today at 8:00 PM (GMT+1)',
+                          gradient: 'from-[#f7e774] to-[#d4a500]',
+                          icon: Music,
+                          iconColor: 'text-[#2d2d2a]',
+                          badge: 'Live Soon',
+                          badgeColor: 'bg-green-100 text-green-600',
+                        },
+                        {
+                          title: 'Afrobeats Night with DJ Cleo',
+                          genre: 'Afrobeats',
+                          time: 'Tomorrow at 9:00 PM (GMT+1)',
+                          gradient: 'from-[#3d3d38] to-[#60615b]',
+                          icon: Mic,
+                          iconColor: 'text-[#f7e774]',
+                          badge: 'Registered',
+                          badgeColor: 'bg-blue-100 text-blue-600',
+                        },
+                      ].map((event) => (
+                        <motion.div
+                          key={event.title}
                           whileHover={{ scale: 1.01, x: 5 }}
                           className="group flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 rounded-[24px] bg-gray-50/50 hover:bg-white hover:shadow-xl hover:shadow-gray-200/40 border border-transparent hover:border-gray-100 transition-all cursor-pointer"
                         >
-                          <div className="relative w-full sm:w-32 h-40 sm:h-24 rounded-2xl overflow-hidden bg-gray-200">
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#f7e774]/40 to-[#d4a500]/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <div className={`relative w-full sm:w-32 h-40 sm:h-24 rounded-2xl overflow-hidden bg-gradient-to-br ${event.gradient} flex items-center justify-center shrink-0`}>
+                            <event.icon className={`h-10 w-10 ${event.iconColor} opacity-80`} />
+                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
                           </div>
                           <div className="flex-1 space-y-2">
                             <div className="flex items-center gap-2">
-                              <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-600 text-[10px] font-bold uppercase">Live Soon</span>
-                              <span className="text-xs text-gray-400">• Jazz & Soul</span>
+                              <span className={`px-2 py-0.5 rounded-full ${event.badgeColor} text-[10px] font-bold uppercase`}>{event.badge}</span>
+                              <span className="text-xs text-gray-400">• {event.genre}</span>
                             </div>
-                            <h4 className="text-xl font-bold group-hover:text-[#d4a500] transition-colors line-clamp-1">Summer Jazz Festival - Premium Stream</h4>
+                            <h4 className="text-xl font-bold group-hover:text-[#d4a500] transition-colors line-clamp-1">{event.title}</h4>
                             <p className="text-sm text-gray-500 flex items-center gap-2">
-                              <Clock className="h-4 w-4" /> Today at 8:00 PM (GMT+1)
+                              <Clock className="h-4 w-4" /> {event.time}
                             </p>
                           </div>
                           <Button className="w-full sm:w-auto rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-[#f7e774] hover:text-[#0f0f0f] border-none shadow-sm group-hover:shadow-md transition-all">

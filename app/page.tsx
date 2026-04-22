@@ -145,41 +145,69 @@ export default function HomePage() {
               className="relative"
             >
               <div className="relative">
+                {/* Glow ring behind card */}
+                <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-[#f7e774]/30 to-[#d4a500]/10 blur-2xl -z-10" />
+
                 {/* Main Video Card */}
-                <div className="relative aspect-video overflow-hidden rounded-2xl border-4 border-[#f7e774] bg-gradient-to-br from-[#2d2d2a] to-[#1a1a18] shadow-2xl">
+                <div className="relative aspect-video overflow-hidden rounded-2xl border-2 border-[#f7e774]/60 shadow-2xl bg-gradient-to-br from-[#1a1210] via-[#2d2014] to-[#1a1a18]">
+
+                  {/* Stage atmosphere — radial spotlight */}
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_80%,rgba(247,231,116,0.18)_0%,transparent_70%)]" />
+
+                  {/* Crowd silhouette row */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[38%] overflow-hidden">
+                    <svg viewBox="0 0 800 120" preserveAspectRatio="none" className="w-full h-full opacity-40" fill="#0f0f0f">
+                      <path d="M0,120 L0,80 Q10,60 20,70 Q30,80 40,60 Q50,40 65,55 Q80,70 90,50 Q100,30 115,45 Q130,60 145,40 Q155,25 170,38 Q185,50 200,35 Q215,20 230,32 Q245,44 260,28 Q275,15 290,25 Q305,35 320,22 Q335,10 350,20 Q365,30 380,18 Q395,8 410,16 Q425,24 440,14 Q455,5 470,12 Q485,20 500,10 Q515,2 530,10 Q545,18 560,8 Q575,0 590,8 Q605,16 620,6 Q635,0 650,8 Q665,16 680,6 Q695,0 710,10 Q725,20 740,12 Q755,5 770,14 Q785,22 800,16 L800,120 Z" />
+                    </svg>
+                  </div>
+
+                  {/* Stage light beams */}
+                  <div className="absolute inset-0 opacity-20">
+                    <div className="absolute bottom-0 left-1/4 w-1 h-full bg-gradient-to-t from-[#f7e774] to-transparent rotate-[-12deg] origin-bottom blur-sm" />
+                    <div className="absolute bottom-0 left-1/2 w-1 h-full bg-gradient-to-t from-[#f7e774] to-transparent origin-bottom blur-sm" />
+                    <div className="absolute bottom-0 left-3/4 w-1 h-full bg-gradient-to-t from-[#f7e774] to-transparent rotate-[12deg] origin-bottom blur-sm" />
+                  </div>
+
+                  {/* Center play button */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <motion.div
-                      animate={{ scale: [1, 1.05, 1] }}
+                      animate={{ scale: [1, 1.06, 1] }}
                       transition={{ duration: 3, repeat: Infinity }}
                       className="relative"
                     >
-                      <div className="absolute inset-0 rounded-full bg-[#f7e774]/20 blur-xl" />
-                      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#f7e774] shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                        <Play className="h-8 w-8 text-[#2d2d2a] ml-1" />
+                      <div className="absolute inset-0 rounded-full bg-[#f7e774]/30 blur-2xl scale-150" />
+                      <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[#f7e774] shadow-xl cursor-pointer hover:scale-110 transition-transform">
+                        <Play className="h-7 w-7 text-[#2d2d2a] ml-1" />
                       </div>
                     </motion.div>
                   </div>
-                  
+
+                  {/* Event title overlay */}
+                  <div className="absolute bottom-[40%] left-0 right-0 flex flex-col items-center gap-1 pointer-events-none">
+                    <p className="text-[#f7e774] text-xs font-bold uppercase tracking-[0.2em] opacity-80">Now Streaming</p>
+                    <p className="text-white text-base md:text-lg font-bold drop-shadow-lg">Jazz Night Live — Lagos</p>
+                  </div>
+
                   {/* Live Badge */}
                   <div className="absolute top-4 left-4 flex items-center gap-2">
                     <span className="relative flex h-3 w-3">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                     </span>
-                    <span className="text-sm font-semibold text-white bg-black/50 px-2 py-1 rounded">LIVE</span>
+                    <span className="text-sm font-semibold text-white bg-black/60 backdrop-blur px-2 py-1 rounded-full">LIVE</span>
                   </div>
 
                   {/* Viewers Count */}
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/50 px-3 py-1.5 rounded-full">
-                    <Users className="h-4 w-4 text-white" />
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full">
+                    <Users className="h-4 w-4 text-[#f7e774]" />
                     <span className="text-sm font-medium text-white">12.5K watching</span>
                   </div>
 
-                  {/* Now Playing Badge - Reduced on mobile */}
+                  {/* Now Playing Badge */}
                   <motion.div
                     animate={{ opacity: [0.9, 1, 0.9] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute top-2 right-2 md:top-4 md:right-4 bg-white/95 backdrop-blur rounded-lg shadow-lg p-1.5 md:p-3"
+                    className="absolute top-2 right-2 md:top-4 md:right-4 bg-white/95 backdrop-blur rounded-xl shadow-lg p-1.5 md:p-3"
                   >
                     <div className="flex items-center gap-1.5 md:gap-2">
                       <div className="h-5 w-5 md:h-8 md:w-8 rounded-full bg-[#f7e774] flex items-center justify-center">
@@ -192,11 +220,11 @@ export default function HomePage() {
                     </div>
                   </motion.div>
 
-                  {/* Streaming To Badge - Reduced on mobile */}
+                  {/* Streaming To Badge */}
                   <motion.div
                     animate={{ opacity: [0.9, 1, 0.9] }}
                     transition={{ duration: 2.5, repeat: Infinity }}
-                    className="absolute bottom-2 right-2 md:bottom-4 md:right-4 bg-white/95 backdrop-blur rounded-lg shadow-lg p-1.5 md:p-3"
+                    className="absolute bottom-2 right-2 md:bottom-4 md:right-4 bg-white/95 backdrop-blur rounded-xl shadow-lg p-1.5 md:p-3"
                   >
                     <div className="flex items-center gap-1.5 md:gap-2">
                       <div className="h-5 w-5 md:h-8 md:w-8 rounded-full bg-[#60615b] flex items-center justify-center">
