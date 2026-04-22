@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useState, Suspense } from 'react'
+import { CheckCircle2 } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -10,7 +11,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 
-export default function LoginPage() {
+function LoginContent() {
+  const searchParams = useSearchParams()
+  const isVerified = searchParams.get('verified') === 'true'
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -75,6 +78,17 @@ export default function LoginPage() {
                   className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive text-center"
                 >
                   {error}
+                </motion.div>
+              )}
+
+              {isVerified && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="rounded-lg bg-green-50 border border-green-100 p-3 text-sm text-green-600 flex items-center justify-center gap-2 font-bold"
+                >
+                  <CheckCircle2 className="h-4 w-4" />
+                  Email verified successfully!
                 </motion.div>
               )}
 
@@ -148,5 +162,13 @@ export default function LoginPage() {
         </Card>
       </motion.div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
   )
 }

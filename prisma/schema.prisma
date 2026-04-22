@@ -53,6 +53,11 @@ model User {
   streamingStatus StreamingStatus @default(NONE)
   payoutEmail     String?
   
+  emailVerified     DateTime?
+  verificationToken String?
+  resetToken        String?   @unique
+  resetTokenExpires DateTime?
+  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   

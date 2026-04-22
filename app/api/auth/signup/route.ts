@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { hash } from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
+import crypto from 'crypto'
+import { triggerNotification } from '@/lib/novu'
 
 export async function POST(request: Request) {
   try {
@@ -35,6 +37,9 @@ export async function POST(request: Request) {
     // Hash the password
     const hashedPassword = await hash(password, 12)
 
+    // Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex')
+
     // Create the user
     const user = await prisma.user.create({
       data: {
@@ -42,9 +47,28 @@ export async function POST(request: Request) {
         email,
         phone,
         password: hashedPassword,
-        role: 'USER', // Default role
+        role: 'USER',
+        verificationToken,
       },
     })
+
+    // Send verification email via Novu
+    try {
+      const verifyUrl = `${process.env.NEXTAUTH_URL}/verify-email?token=${verificationToken}`
+      await triggerNotification({
+        workflowId: 'email-verification',
+        to: { 
+          subscriberId: user.id,
+          email: user.email,
+        },
+        payload: {
+          name: user.name,
+          verify_url: verifyUrl,
+        }
+      })
+    } catch (novuError) {
+      console.error('Novu verification email failed:', novuError)
+    }
 
     return NextResponse.json(
       { 
