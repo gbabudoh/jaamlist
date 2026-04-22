@@ -11,11 +11,17 @@ import { PageWrapper } from '@/components/page-wrapper'
 export function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isDashboard = pathname?.startsWith('/dashboard')
+  const isCreatorDashboard = pathname?.startsWith('/creator/dashboard')
   const isLoginPage = pathname === '/login' || pathname === '/signup'
   const isAdminRoute = pathname?.startsWith('/admin')
 
-  if (isAdminRoute) {
-    return <>{children}</>
+  if (isAdminRoute || isCreatorDashboard || isDashboard) {
+    return (
+      <>
+        {children}
+        <MobileNav />
+      </>
+    )
   }
 
   return (

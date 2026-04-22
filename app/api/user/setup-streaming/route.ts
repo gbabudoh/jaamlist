@@ -18,16 +18,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Bio and Payout Email are required' }, { status: 400 })
     }
 
-    // Update user with creator application data
-    // Casting to unknown first to bypass generation issues while dev server is running
-    const updatedUser = await (prisma.user as unknown as { update: (args: unknown) => Promise<{id: string, streamingStatus: string}> }).update({
+    const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
       data: {
         bio,
         website: website || null,
         instagram: instagram || null,
         payoutEmail,
-        streamingStatus: 'PENDING', // Will require admin approval
+        role: 'CREATOR',
+        streamingStatus: 'APPROVED',
       },
     })
 
@@ -35,7 +34,7 @@ export async function POST(req: Request) {
       message: 'Application submitted successfully',
       user: {
         id: updatedUser.id,
-        streamingStatus: (updatedUser as unknown as { streamingStatus: string }).streamingStatus
+        streamingStatus: updatedUser.streamingStatus
       }
     })
   } catch (error) {

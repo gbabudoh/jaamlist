@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Radio, List, LayoutDashboard, Settings, LogOut, ChevronDown } from 'lucide-react'
+import { List, LayoutDashboard, Settings, LogOut, ChevronDown, HelpCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signOut } from 'next-auth/react'
 import { useState, useRef, useEffect } from 'react'
@@ -12,6 +12,7 @@ import { useState, useRef, useEffect } from 'react'
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/events', label: 'Events', icon: List },
+  { href: '/how-it-works', label: 'How It Works', icon: HelpCircle },
 ]
 
 export function Navbar() {
@@ -51,30 +52,32 @@ export function Navbar() {
           </Link>
 
           <div className="flex items-center space-x-1">
-            {navLinks.map(({ href, label, icon: Icon }) => {
-              const isActive = pathname === href || pathname?.startsWith(href + '/')
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`relative flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'text-[#d4a500] bg-[#f7e774]/15'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{label}</span>
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-active-pill"
-                      className="absolute inset-0 rounded-full border border-[#f7e774]/40"
-                      transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }}
-                    />
-                  )}
-                </Link>
-              )
-            })}
+            {navLinks
+              .filter(({ label }) => label !== 'Dashboard' || session)
+              .map(({ href, label, icon: Icon }) => {
+                const isActive = pathname === href || pathname?.startsWith(href + '/')
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`relative flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'text-[#d4a500] bg-[#f7e774]/15'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{label}</span>
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-active-pill"
+                        className="absolute inset-0 rounded-full border border-[#f7e774]/40"
+                        transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }}
+                      />
+                    )}
+                  </Link>
+                )
+              })}
 
             <div className="ml-4 flex items-center space-x-3">
               {session ? (

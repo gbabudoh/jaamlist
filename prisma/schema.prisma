@@ -73,6 +73,7 @@ model Event {
   playbackUrl     String?
   
   type            EventType   @default(FREE)
+  category        String?
   status          EventStatus @default(PENDING)
   price           Float?
   

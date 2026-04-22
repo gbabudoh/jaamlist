@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -278,10 +278,10 @@ const countries = [
 
 const categories = [
   { id: 'all', name: 'All Categories', icon: Grid },
-  { id: 'concert', name: 'Concerts', icon: Music },
-  { id: 'interview', name: 'Interviews', icon: Mic },
-  { id: 'drama', name: 'Stage Dramas', icon: Theater },
-  { id: 'comedy', name: 'Comedy Shows', icon: Laugh },
+  { id: 'Live Concerts', name: 'Live Concerts', icon: Music },
+  { id: 'Live Interviews', name: 'Live Interviews', icon: Mic },
+  { id: 'Live Stage Dramas', name: 'Live Stage Dramas', icon: Theater },
+  { id: 'Live Comedy Shows', name: 'Live Comedy Shows', icon: Laugh },
 ]
 
 const statusFilters = [
@@ -354,41 +354,41 @@ export default function EventsPage() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
+            className="text-center mb-8 lg:mb-12"
           >
             <div className="inline-flex items-center gap-2 rounded-full bg-[#f7e774]/20 border border-[#f7e774]/30 px-4 py-2 mb-6">
-              <Sparkles className="h-4 w-4 text-[#f7e774]" />
-              <span className="text-sm font-medium text-[#f7e774]">Discover Live Events Worldwide</span>
+              <Sparkles className="h-3.5 w-3.5 text-[#f7e774]" />
+              <span className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-[#f7e774]">Discover Live Experiences</span>
             </div>
-            <h1 className="font-display text-4xl font-bold sm:text-5xl lg:text-6xl mb-4">
-              Live Events
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-black mb-4 tracking-tighter">
+              Live <span className="text-[#f7e774]">Events</span>
             </h1>
-            <p className="text-lg text-white/70 max-w-2xl mx-auto">
-              Discover and join live streaming events from creators around the world
+            <p className="text-sm sm:text-lg text-white/50 max-w-2xl mx-auto font-medium leading-relaxed px-4">
+              Step into the front row of global culture. Join high-fidelity streams from the world&apos;s most talented creators.
             </p>
           </motion.div>
 
-          {/* Search Bar */}
+          {/* Search & Country Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1 group">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-[#f7e774] transition-colors" />
                 <Input
                   type="text"
-                  placeholder="Search events, creators, or keywords..."
+                  placeholder="Artist, show, or category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-14 text-base bg-white border-0 shadow-lg"
+                  className="pl-14 h-14 sm:h-16 text-sm sm:text-base bg-white/10 border-white/10 backdrop-blur-xl text-white placeholder:text-white/30 rounded-2xl focus:ring-4 focus:ring-[#f7e774]/20 focus:border-[#f7e774] transition-all"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -396,72 +396,77 @@ export default function EventsPage() {
               </div>
               
               {/* Country Selector */}
-              <div className="relative">
+              <div className="relative md:w-72">
                 <button
                   onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                  className="h-14 px-4 bg-white rounded-lg shadow-lg flex items-center gap-2 hover:bg-gray-50 transition-colors min-w-[180px]"
+                  className="w-full h-14 sm:h-16 px-6 bg-white/10 border border-white/10 backdrop-blur-xl rounded-2xl flex items-center gap-3 hover:bg-white/20 transition-all text-white group"
                 >
-                  <MapPin className="h-5 w-5 text-[#d4a500]" />
-                  <span className="text-sm font-medium text-[#2d2d2a]">
+                  <MapPin className="h-5 w-5 text-[#f7e774]" />
+                  <span className="text-sm font-black truncate">
                     {selectedCountry?.flag} {selectedCountry?.name}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground ml-auto" />
+                  <ChevronDown className={`h-4 w-4 text-white/30 ml-auto transition-transform duration-300 ${showCountryDropdown ? 'rotate-180' : ''}`} />
                 </button>
-                
-                {showCountryDropdown && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-full mt-2 right-0 w-72 bg-white rounded-xl shadow-2xl border z-50 overflow-hidden"
-                  >
-                    <div className="p-2 border-b bg-gray-50/50">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          autoFocus
-                          placeholder="Search countries..."
-                          value={countrySearchQuery}
-                          onChange={(e) => setCountrySearchQuery(e.target.value)}
-                          className="pl-9 h-10 text-sm bg-white"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="max-h-64 overflow-y-auto">
-                      {countries
-                        .filter(country => 
-                          country.name.toLowerCase().includes(countrySearchQuery.toLowerCase()) ||
-                          country.code === 'all'
-                        )
-                        .map((country) => (
-                        <button
-                          key={country.code}
-                          onClick={() => {
-                            setCountryFilter(country.code)
-                            setShowCountryDropdown(false)
-                            setCountrySearchQuery('')
-                          }}
-                          className={`w-full px-4 py-2.5 flex items-center gap-3 hover:bg-gray-50 transition-colors text-left ${
-                            countryFilter === country.code ? 'bg-[#f7e774]/20' : ''
-                          }`}
-                        >
-                          <span className="text-xl flex-shrink-0">{country.flag}</span>
-                          <span className={`text-sm ${countryFilter === country.code ? 'font-semibold text-[#d4a500]' : 'font-medium text-[#2d2d2a]'}`}>
-                            {country.name}
-                          </span>
-                          {countryFilter === country.code && (
-                            <CheckCircle2 className="h-4 w-4 text-[#d4a500] ml-auto" />
-                          )}
-                        </button>
-                      ))}
-                      {countries.filter(c => c.name.toLowerCase().includes(countrySearchQuery.toLowerCase())).length === 0 && (
-                        <div className="p-8 text-center text-sm text-muted-foreground">
-                          <p>No country found</p>
+                <AnimatePresence>
+                  {showCountryDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute top-full mt-3 right-0 left-0 md:left-auto md:w-80 bg-white rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-slate-100 z-[100] overflow-hidden"
+                    >
+                      <div className="p-4 border-b bg-slate-50/50">
+                        <div className="relative">
+                          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                          <Input
+                            autoFocus
+                            placeholder="Find your region..."
+                            value={countrySearchQuery}
+                            onChange={(e) => setCountrySearchQuery(e.target.value)}
+                            className="pl-11 h-12 text-sm bg-white border-slate-200 rounded-xl"
+                          />
                         </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
+                      </div>
+                      
+                      <div className="max-h-72 overflow-y-auto no-scrollbar py-2">
+                        {countries
+                          .filter(country => 
+                            country.name.toLowerCase().includes(countrySearchQuery.toLowerCase()) ||
+                            country.code === 'all'
+                          )
+                          .map((country) => (
+                          <button
+                            key={country.code}
+                            onClick={() => {
+                              setCountryFilter(country.code)
+                              setShowCountryDropdown(false)
+                              setCountrySearchQuery('')
+                            }}
+                            className={`w-full px-5 py-3.5 flex items-center gap-4 hover:bg-slate-50 transition-all text-left ${
+                              countryFilter === country.code ? 'bg-[#f7e774]/10' : ''
+                            }`}
+                          >
+                            <span className="text-2xl flex-shrink-0">{country.flag}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-sm ${countryFilter === country.code ? 'font-black text-[#856404]' : 'font-bold text-[#0f172a]'}`}>
+                                {country.name}
+                              </p>
+                              {country.code === 'all' && <p className="text-[10px] font-medium text-slate-400">Global Search</p>}
+                            </div>
+                            {countryFilter === country.code && (
+                              <CheckCircle2 className="h-4 w-4 text-[#d4a500]" />
+                            )}
+                          </button>
+                        ))}
+                        {countries.filter(c => c.name.toLowerCase().includes(countrySearchQuery.toLowerCase())).length === 0 && (
+                          <div className="p-8 text-center text-sm text-muted-foreground">
+                            <p>No country found</p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>
@@ -473,21 +478,23 @@ export default function EventsPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             {/* Status Filters */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
               {statusFilters.map((status) => (
                 <Button
                   key={status.id}
                   variant={statusFilter === status.id ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setStatusFilter(status.id)}
-                  className={`whitespace-nowrap ${
-                    statusFilter === status.id ? 'bg-[#f7e774] text-[#2d2d2a] hover:bg-[#f0df5f]' : ''
+                  className={`whitespace-nowrap h-10 px-6 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${
+                    statusFilter === status.id 
+                      ? 'bg-[#0f172a] text-white hover:bg-[#d4a500] border-none shadow-lg' 
+                      : 'border-slate-200 text-slate-500 hover:border-[#f7e774] hover:text-[#0f172a]'
                   }`}
                 >
                   {status.dot && (
-                    <span className="relative flex h-2 w-2 mr-2">
+                    <span className="relative flex h-1.5 w-1.5 mr-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
                     </span>
                   )}
                   {status.name}
@@ -496,34 +503,36 @@ export default function EventsPage() {
             </div>
 
             {/* Right Side Controls */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 ml-auto sm:ml-0">
               {/* Category Filter */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="gap-2"
+                className={`gap-2 h-10 px-5 rounded-xl font-black text-[10px] tracking-widest uppercase transition-all ${
+                  showFilters ? 'bg-[#f7e774]/10 border-[#f7e774] text-[#856404]' : 'border-slate-200 text-slate-500'
+                }`}
               >
-                <Filter className="h-4 w-4" />
+                <Filter className="h-3.5 w-3.5" />
                 Filters
                 {activeFiltersCount > 0 && (
-                  <span className="bg-[#f7e774] text-[#2d2d2a] text-xs px-1.5 py-0.5 rounded-full font-semibold">
+                  <span className="bg-[#f7e774] text-[#856404] text-[10px] px-1.5 py-0.5 rounded-full font-black">
                     {activeFiltersCount}
                   </span>
                 )}
               </Button>
 
               {/* View Mode Toggle */}
-              <div className="hidden sm:flex items-center border rounded-lg overflow-hidden">
+              <div className="hidden sm:flex items-center p-1 bg-slate-100 rounded-xl">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 ${viewMode === 'grid' ? 'bg-[#f7e774] text-[#2d2d2a]' : 'hover:bg-muted'}`}
+                  className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-[#0f172a] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   <Grid className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 ${viewMode === 'list' ? 'bg-[#f7e774] text-[#2d2d2a]' : 'hover:bg-muted'}`}
+                  className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-[#0f172a] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -532,48 +541,57 @@ export default function EventsPage() {
           </div>
 
           {/* Expanded Filters */}
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="pt-4 border-t mt-4"
-            >
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-muted-foreground">Category:</span>
-                  <div className="flex gap-2">
-                    {categories.map((cat) => (
-                      <Button
-                        key={cat.id}
-                        variant={categoryFilter === cat.id ? 'default' : 'ghost'}
-                        size="sm"
-                        onClick={() => setCategoryFilter(cat.id)}
-                        className={`gap-2 ${
-                          categoryFilter === cat.id ? 'bg-[#60615b] text-white hover:bg-[#4d4e49]' : ''
-                        }`}
-                      >
-                        <cat.icon className="h-4 w-4" />
-                        {cat.name}
-                      </Button>
-                    ))}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-6 border-t mt-4">
+                  <div className="flex flex-col gap-6">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 block">Event Classification</span>
+                      <div className="flex flex-wrap gap-2">
+                        {categories.map((cat) => (
+                          <Button
+                            key={cat.id}
+                            variant={categoryFilter === cat.id ? 'default' : 'ghost'}
+                            size="sm"
+                            onClick={() => setCategoryFilter(cat.id)}
+                            className={`h-11 px-6 rounded-xl font-bold text-xs transition-all gap-3 ${
+                              categoryFilter === cat.id 
+                                ? 'bg-[#0f172a] text-white shadow-lg' 
+                                : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                            }`}
+                          >
+                            <cat.icon className={`h-4 w-4 ${categoryFilter === cat.id ? 'text-[#f7e774]' : ''}`} />
+                            {cat.name}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {activeFiltersCount > 0 && (
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <p className="text-[10px] font-bold text-slate-400">Showing filtered results</p>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={clearAllFilters}
+                          className="h-10 px-4 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 font-black text-[10px] uppercase tracking-widest"
+                        >
+                          <X className="h-3.5 w-3.5 mr-2" />
+                          Reset Filters
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
-                
-                {activeFiltersCount > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearAllFilters}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    <X className="h-4 w-4 mr-1" />
-                    Clear all
-                  </Button>
-                )}
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
