@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -123,7 +123,7 @@ const demoData: Record<string, CreatorProfile> = {
   }
 }
 
-export default function CreatorDashboardPage() {
+function CreatorDashboardContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -977,5 +977,20 @@ function StatCard({ title, value, icon: Icon, trend, color, delay }: StatCardPro
         <h2 className="text-2xl sm:text-4xl font-black text-[#0f172a] tracking-tighter group-hover:text-[#d4a500] transition-colors cursor-pointer">{value}</h2>
       </div>
     </motion.div>
+  )
+}
+
+export default function CreatorDashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="h-12 w-12 rounded-full border-4 border-[#f7e774] border-t-transparent animate-spin mx-auto" />
+          <p className="text-sm font-bold text-slate-400">Loading Dashboard...</p>
+        </div>
+      </div>
+    }>
+      <CreatorDashboardContent />
+    </Suspense>
   )
 }
